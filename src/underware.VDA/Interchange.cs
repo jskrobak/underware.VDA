@@ -4,8 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml;
 using System.Xml.Linq;
 using underware.Edi.Common;
+using underware.Edi.Common.DocumentModel;
 
 namespace underware.VDA
 {
@@ -13,7 +15,8 @@ namespace underware.VDA
 
     {
         public List<Message> Messages { get; set; }
-
+        public DateTime Created { get; }
+        public IEnumerable<IDocument> Documents => Messages;
         public Interchange()
         {
             Messages = new List<Message>();
@@ -91,9 +94,34 @@ namespace underware.VDA
             get { return $"VDA.{Messages.First().MessageType}"; }
         }
 
-        public XDocument ToXml()
+        public string RefNo => string.Empty;
+
+
+        public XDocument ToXml(Encoding outEnc)
         {
-            return new XDocument(new XElement("Interchange", Messages.Select(m => m.ToXml())));
+            var xDoc = new XDocument(new XElement("Interchange", Messages.Select(m => m.ToXml())));
+
+            using var ms = new MemoryStream();
+
+            // Create an XML writer with UTF-8 encoding
+            var settings = new XmlWriterSettings
+            {
+                Encoding = outEnc, // false for no BOM
+                Indent = true // optional: for pretty formatting
+            };
+
+            using var xmlWriter = XmlWriter.Create(ms, settings);
+
+            // Write the XML document to the memory stream with UTF-8 encoding
+            xDoc.WriteTo(xmlWriter);
+
+
+            // Reset the memory stream position to the beginning
+            ms.Position = 0;
+
+            // Load the XML data from the memory stream as UTF-8 encoded
+            return XDocument.Load(ms, LoadOptions.PreserveWhitespace);
+            
         }
     }
 }

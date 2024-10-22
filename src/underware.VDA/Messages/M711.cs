@@ -9,8 +9,8 @@ namespace underware.VDA.Messages
     public class M711 : Message
     {
         public override string MessageType => "4913";
-        public override string Sender => AllRecords.OfType<R711>().First().SupplierID;
-        public override string Receiver => AllRecords.OfType<R711>().First().CustomerID;
+        public override string Sender => AllRecords.OfType<R711>().First().C004_SupplierID;
+        public override string Receiver => AllRecords.OfType<R711>().First().C003_CustomerID;
 
     }
 }

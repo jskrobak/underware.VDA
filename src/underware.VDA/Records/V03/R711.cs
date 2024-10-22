@@ -18,34 +18,34 @@ namespace underware.VDA.Records.V03
 
 
         [RecordInfo(3, 9, Align.LEFT)]
-        public string CustomerID { get; set; }
+        public string C003_CustomerID { get; set; }
 
         [RecordInfo(4, 9, Align.LEFT)]
-        public string SupplierID { get; set; }
+        public string C004_SupplierID { get; set; }
 
         [RecordInfo(5, 5, Align.LEFT)]
-        public string OldTransmissionNo { get; set; }
+        public string C005_OldTransmissionNo { get; set; }
 
         [RecordInfo(6, 5, Align.LEFT)]
-        public string NewTransmissionNo { get; set; }
+        public string C006_NewTransmissionNo { get; set; }
 
         [RecordInfo(7, 6, Align.LEFT)]
-        public string TransmissionDate { get; set; }
+        public string C007_TransmissionDate { get; set; }
 
         [RecordInfo(8, 9, Align.LEFT)]
-        public string SubSupplierNo { get; set; }
+        public string C008_SubSupplierNo { get; set; }
 
         [RecordInfo(9, 9, Align.LEFT)]
-        public string CarrierID { get; set; }
+        public string C009_CarrierID { get; set; }
 
         [RecordInfo(10, 1, Align.LEFT)]
-        public string KeyToStocklist { get; set; }
+        public string C010_KeyToStocklist { get; set; }
 
         [RecordInfo(11, 1, Align.LEFT)]
-        public string DeliveryCode { get; set; }
+        public string C011_DeliveryCode { get; set; }
 
         [RecordInfo(12, 69, Align.LEFT)]
-        public string Empty { get; set; }
+        public string C012_Empty { get; set; }
 
         
     }

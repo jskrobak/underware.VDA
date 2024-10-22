@@ -17,61 +17,61 @@ namespace underware.VDA.Records.V03
         }
 
         [RecordInfo(1, 8, Align.LEFT)]
-        public string DeliveryNoteNo { get; set; }
+        public string C003_DeliveryNoteNo { get; set; }
 
         [RecordInfo(2, 6, Align.LEFT)]
-        public string DespatchDate { get; set; }
+        public string C004_DespatchDate { get; set; }
 
         [RecordInfo(3, 5, Align.LEFT)]
-        public string UnloadingPoint { get; set; }
+        public string C005_UnloadingPoint { get; set; }
 
         [RecordInfo(4, 2, Align.LEFT)]
-        public string DespatchType { get; set; }
+        public string C006_DespatchType { get; set; }
 
         [RecordInfo(5, 4, Align.LEFT)]
-        public string CustomerReferenceNoLAB { get; set; }
+        public string C007_CustomerReferenceNoLAB { get; set; }
 
         [RecordInfo(6, 12, Align.LEFT)]
-        public string ContractOrderNo { get; set; }
+        public string C008_ContractOrderNo { get; set; }
 
         [RecordInfo(7, 2, Align.LEFT)]
-        public string ProcessCode { get; set; }
+        public string C009_ProcessCode { get; set; }
 
         [RecordInfo(8, 4, Align.LEFT)]
-        public string Empty { get; set; }
+        public string C010_Empty { get; set; }
 
         [RecordInfo(9, 3, Align.LEFT)]
-        public string CustomerPlant { get; set; }
+        public string C011_CustomerPlant { get; set; }
 
         [RecordInfo(10, 8, Align.LEFT)]
-        public string Consignment { get; set; }
+        public string C012_Consignment { get; set; }
 
         [RecordInfo(11, 9, Align.LEFT)]
-        public string GoodsReceiverId { get; set; }
+        public string C013_GoodsReceiverId { get; set; }
 
         [RecordInfo(12, 1, Align.LEFT)]
-        public string Empty2 { get; set; }
+        public string C014_Empty2 { get; set; }
 
         [RecordInfo(13, 7, Align.LEFT)]
-        public string CustomerStorageLocation { get; set; }
+        public string C015_CustomerStorageLocation { get; set; }
 
         [RecordInfo(14, 9, Align.LEFT)]
-        public string SupplierId { get; set; }
+        public string C016_SupplierId { get; set; }
 
         [RecordInfo(15, 14, Align.LEFT)]
-        public string PointofAssembling { get; set; }
+        public string C017_PointofAssembling { get; set; }
 
         [RecordInfo(16, 4, Align.LEFT)]
-        public string ReleaseNo { get; set; }
+        public string C018_ReleaseNo { get; set; }
 
         [RecordInfo(17, 6, Align.LEFT)]
-        public string CustomerReference { get; set; }
+        public string C019_CustomerReference { get; set; }
 
         [RecordInfo(18, 14, Align.LEFT)]
-        public string CustomerReferenceNo { get; set; }
+        public string C020_CustomerReferenceNo { get; set; }
 
         [RecordInfo(19, 5, Align.LEFT)]
-        public string Empty3 { get; set; }
+        public string C021_Empty3 { get; set; }
 
 
     }

@@ -73,15 +73,15 @@ namespace underware.VDA
 
         public string ToVDA()
         {
-            List<RecordInfo> structure = GetStructure();
+            var structure = GetStructure();
 
-            StringBuilder s = new StringBuilder();
+            var s = new StringBuilder();
 
-            foreach (RecordInfo info in structure)
+            foreach (var info in structure)
             {
-                PropertyInfo prop = this.GetType().GetProperty(info.Name);
-                int len = info.Length;
-                string strValue = (string)prop.GetValue(this);
+                var prop = this.GetType().GetProperty(info.Name); 
+                var len = info.Length;
+                var strValue = $"{prop.GetValue(this)}";
 
 
                 if (strValue.Length > len)

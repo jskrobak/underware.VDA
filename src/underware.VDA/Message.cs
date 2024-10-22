@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using underware.Edi.Common;
+using underware.Edi.Common.DocumentModel;
 using underware.VDA.Messages;
 
 namespace underware.VDA
 {
-    public class Message
+    public class Message: IDocument
     {
         private List<Record> _allRecords;
 
@@ -37,9 +39,9 @@ namespace underware.VDA
 
         public static Message Parse(List<string> lines)
         {
-            Message msg = new Message();
+            var msg = new Message();
 
-            string typeName = $"underwarex.VDA.Messages.M{lines[0].Substring(0, 3)}";
+            var typeName = $"underwarex.VDA.Messages.M{lines[0].Substring(0, 3)}";
             var messageType = Type.GetType(typeName);
 
             if(messageType != null)
@@ -48,18 +50,14 @@ namespace underware.VDA
             }
 
 
-            for (int i = 0; i < lines.Count; i++)
+            foreach (var rec in from line in lines
+                     where line.Length > 3
+                     let name = line.Substring(0, 3).TrimEnd()
+                     let version = line.Substring(3, 2).TrimEnd()
+                     let t = GetRecordType(name, version)
+                     select (Record)Activator.CreateInstance(t, line))
             {
-                string line = lines[i];
-
-                if (line.Length > 3)
-                {
-                    string name = line.Substring(0, 3).TrimEnd();
-                    string version = line.Substring(3, 2).TrimEnd();
-                    Type t = GetRecordType(name, version);
-                    Record rec = (Record)Activator.CreateInstance(t, line);
-                    msg.AllRecords.Add(rec);
-                }
+                msg.AllRecords.Add(rec);
             }
 
             return msg;
@@ -67,12 +65,19 @@ namespace underware.VDA
 
         private static Type GetRecordType(string name, string version)
         {
-            Type t = Type.GetType(string.Format("underware.VDA.Records.V{0}.R{1}", version, name));
+            var t = Type.GetType($"underware.VDA.Records.V{version}.R{name}");
 
-            if (t != null)
-                return t;
-            else
-                return typeof(Record);
+            return t ?? typeof(Record);
+        }
+
+        public virtual BaseDocument GetDocument()
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void FromDocument(BaseDocument doc)
+        {
+            throw new NotImplementedException();
         }
     }
 }
