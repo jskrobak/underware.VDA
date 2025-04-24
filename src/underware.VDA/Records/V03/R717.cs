@@ -1,6 +1,7 @@
 ﻿namespace underware.VDA.Records.V03
 {
-    public class R717: Record
+    [Parent(typeof(IR714))]
+    public class R717: Record, IR717
     {
         public R717(string line) : base(line)
         {

@@ -1,4 +1,4 @@
-﻿namespace underware.VDA.Records.V03
+﻿namespace underware.VDA.Records.V02
 {
     [Parent(typeof(IR714))]
     public class R716: Record, IR716
@@ -10,7 +10,7 @@
         public R716() : base()
         {
             Name = "716";
-            Version = "03";
+            Version = "02";
         }
 
         [Field(1, 40, Align.LEFT)]

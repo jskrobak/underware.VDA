@@ -1,0 +1,50 @@
+﻿using System;
+using underware.VDA.Messages;
+
+namespace underware.VDA.Records.V02;
+
+public class R551: Record, IR551, IInterchangeHeaderRecord
+{
+    
+    public R551(string line) : base(line)
+    {
+    }
+
+    public R551() : base()
+    {
+        Name = "551";
+        Version = "02";
+    }
+    
+    [Field(3, 9, Align.LEFT)]
+    public string C003_CustomerID { get; set; }
+
+    [Field(4, 9, Align.LEFT)]
+    public string C004_SupplierID { get; set; }
+
+    [Field(5, 5, Align.RIGHT, '0')]
+    public string C005_OldTransmissionNo { get; set; }
+
+    [Field(6, 5, Align.RIGHT, '0')]
+    public string C006_NewTransmissionNo { get; set; }
+
+    [Field(7, 6, Align.LEFT)]
+    public string C007_TransmissionDate { get; set; }
+
+    [Field(8, 6, Align.LEFT)]
+    public string C008_DateSetToZeroNumber { get; set; }
+
+    [Field(9, 83, Align.LEFT)]
+    public string C009_Empty { get; set; }
+
+    public string Sender
+    {
+        get { return C003_CustomerID; }
+        set { C003_CustomerID = value; }
+    }
+    public string Receiver => C004_SupplierID;
+    
+    public string RefNumber => C006_NewTransmissionNo;
+    public string MessageName => "4915";
+    public Type MessageType => typeof(M4915);
+}

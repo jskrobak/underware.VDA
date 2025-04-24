@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Xml.Linq;
 using underware.Edi.Common;
@@ -9,26 +10,16 @@ using underware.VDA.Messages;
 
 namespace underware.VDA
 {
-    public class Message: IDocument
+    public class Message(Interchange interchange): IDocument, IEdiData, IParent
     {
-        private List<Record> _allRecords;
 
-        public Message()
-        {
-            _allRecords = new List<Record>();
-        }
-
-        public virtual string Sender { get; }
-
-        public virtual string Receiver { get; }
-
-        public virtual string MessageType => "000";
-
-        public List<Record> AllRecords { get { return _allRecords; } }
+        public Interchange Interchange { get; set; } = interchange;
+        
+        public List<Record> AllRecords { get; } = [];
 
         public XElement ToXml()
         {
-            return new XElement("Message", AllRecords.Select(r => r.ToXml()));
+            return new XElement("Message", Subrecords.Select(r => r.ToXml()));
         }
         
 
@@ -37,39 +28,37 @@ namespace underware.VDA
             return string.Concat(AllRecords.Select(r => r.ToVDA()));
         }
 
-        public static Message Parse(List<string> lines)
+        public static Message Parse(List<string> lines, Interchange interchange)
         {
-            var msg = new Message();
+            var messageType = interchange.Header.MessageType;
 
-            var typeName = $"underwarex.VDA.Messages.M{lines[0].Substring(0, 3)}";
-            var messageType = Type.GetType(typeName);
-
-            if(messageType != null)
-            {
-                msg = (Message)Activator.CreateInstance(messageType);
-            }
-
-
+            var msg = (Message)Activator.CreateInstance(messageType, new object[] { interchange});
+            
             foreach (var rec in from line in lines
                      where line.Length > 3
-                     let name = line.Substring(0, 3).TrimEnd()
-                     let version = line.Substring(3, 2).TrimEnd()
-                     let t = GetRecordType(name, version)
-                     select (Record)Activator.CreateInstance(t, line))
+                     select Record.Parse(line))
             {
                 msg.AllRecords.Add(rec);
             }
+            
+            //create tree structure
+            for (var i = 0; i < msg.AllRecords.Count; i++)
+            {
+                var record = msg.AllRecords[i];
+                var parentType = record.GetType().GetCustomAttribute<ParentAttribute>()?.Type;
 
+                var parent = parentType == null || parentType.BaseType == typeof(Message)
+                    ? msg
+                    : msg.AllRecords.Take(i).OfType<IParent>().LastOrDefault(p => p.Is(parentType));
+                
+                parent?.Subrecords.Add(record);    
+            }
+            
+            //FindChildren(msg,  msg.AllRecords, 0);
+            
             return msg;
         }
-
-        private static Type GetRecordType(string name, string version)
-        {
-            var t = Type.GetType($"underware.VDA.Records.V{version}.R{name}");
-
-            return t ?? typeof(Record);
-        }
-
+        
         public virtual BaseDocument GetDocument()
         {
             throw new NotImplementedException();
@@ -79,5 +68,8 @@ namespace underware.VDA
         {
             throw new NotImplementedException();
         }
+
+        public IList<Record> Subrecords { get; set; } = new List<Record>();
+        
     }
 }

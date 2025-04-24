@@ -14,26 +14,59 @@ namespace underware.VDA
     public class Interchange : IEdiInterchange, IXmlExportable
 
     {
-        public List<Message> Messages { get; set; }
-        public DateTime Created { get; }
-        public IEnumerable<IDocument> Documents => Messages;
         public Interchange()
         {
-            Messages = new List<Message>();
+            Messages = [];
         }
-
-        public string ToVDA()
+        
+        public Interchange(IInterchangeHeaderRecord header, IInterchangeTrailerRecord trailer)
         {
-            StringBuilder sb = new StringBuilder();
+            Header = header;
+            Trailer = trailer;
+            Messages = [];
+        }
+        
+        public void RecalculateTrailer()
+        {
+            Trailer?.Recalculate(this);
+        }
+        
+        public List<Record> GetAllRecords()
+        {
+            var allRecords = Messages.SelectMany(s => s.AllRecords).ToList();
+            allRecords.Insert(0, Header as Record);
+            allRecords.Add(Trailer as Record);
 
-            sb.Append(string.Concat(Messages.Select(m => m.ToVDA())));
+            return allRecords;
+        }
+        
+        public IInterchangeHeaderRecord Header { get; set; }
+        public IInterchangeTrailerRecord Trailer { get; set; }
+        
+        public List<Message> Messages { get; set; }
+        public DateTime? Created { get; }
+        public IEnumerable<IDocument> Documents => Messages;
+        
 
-            return sb.ToString();
+        public string ToVDA(bool wrapLines = false)
+        {
+            RecalculateTrailer();
+            
+            var records = new List<Record> { Header as Record };
+
+            foreach(var msg in Messages)
+                records.AddRange(msg.AllRecords);
+            
+            records.Add(Trailer as Record);
+
+            return wrapLines
+                ? string.Join(Environment.NewLine, records.Select(r => r.ToVDA()))
+                : string.Concat(records.Select(r => r.ToVDA()));
         }
 
         public static Interchange FromFile(string filePath)
         {
-            return Interchange.Parse(File.ReadAllText(filePath, ASCIIEncoding.ASCII));
+            return Interchange.Parse(File.ReadAllText(filePath, Encoding.ASCII));
         }
 
         public static Interchange FromFile(string filePath, Encoding enc)
@@ -41,65 +74,74 @@ namespace underware.VDA
             return Interchange.Parse(File.ReadAllText(filePath, enc));
         }
 
-        public static Interchange Parse(string content)
-        {
-            List<string> lines = new List<string>();
+        
 
-            int lineLen = 128;
-            int pos = 0;
+        public static Interchange Parse(string text)
+        {
+            var content = text.Replace("\r", "").Replace("\n", "");
+            
+            var lines = new List<string>();
+
+            var lineLen = 128;
+            var pos = 0;
             while (pos < content.Length)
             {
                 lines.Add(content.Substring(pos, lineLen));
                 pos += lineLen;
             }
 
-            Interchange itr = new Interchange();
+            var itr = new Interchange()
+            {
+                Header = Record.Parse(lines[0]) as IInterchangeHeaderRecord,
+                Trailer = Record.Parse(lines.Last()) as IInterchangeTrailerRecord,
+            };
+            
+            lines.RemoveAt(0);
+            lines.RemoveAt(lines.Count - 1);
 
-            string firstRecType = lines[0].Substring(0, 3);
+            var firstMessageRecType = lines[0].Substring(0, 3);
 
             List<string> lineBuffer = null;
 
-
-            foreach (string line in lines)
+            foreach (var line in lines)
             {
-                if (line.StartsWith(firstRecType))
+                if (line.StartsWith(firstMessageRecType))
                 {
                     if (lineBuffer != null)
-                        itr.Messages.Add(Message.Parse(lineBuffer));
+                        itr.Messages.Add(Message.Parse(lineBuffer, itr));
 
-                    lineBuffer = new List<string>();
+                    lineBuffer = [];
                 }
 
                 lineBuffer.Add(line);
             }
 
             if (lineBuffer != null)
-                itr.Messages.Add(Message.Parse(lineBuffer));
+                itr.Messages.Add(Message.Parse(lineBuffer, itr));
 
             return itr;
         }
 
         public string Sender
         {
-            get { return Messages.First().Sender; }
+            get => Header.Sender;
+            set => Header.Sender = value;
         }
         
-        public string Receiver
-        {
-            get { return Messages.First().Receiver; }
-        }
+        public string Receiver => Header.Receiver;
+        public string Format => $"VDA.{Header.MessageName}";
 
-        public string Format
-        {
-            get { return $"VDA.{Messages.First().MessageType}"; }
-        }
-
-        public string RefNo => string.Empty;
+        public string RefNo => Header.RefNumber;
 
 
         public XDocument ToXml(Encoding outEnc)
         {
-            var xDoc = new XDocument(new XElement("Interchange", Messages.Select(m => m.ToXml())));
+            var nodes = new List<XElement>();
+            nodes.Add(((Record)Header).ToXml());
+            nodes.AddRange(Messages.Select(m => m.ToXml()));
+            nodes.Add(((Record)Trailer).ToXml());
+            
+            var xDoc = new XDocument(new XElement("Interchange", nodes));
 
             using var ms = new MemoryStream();
 

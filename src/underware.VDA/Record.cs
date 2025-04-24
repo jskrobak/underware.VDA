@@ -7,12 +7,12 @@ using System.Xml.Linq;
 
 namespace underware.VDA
 {
-    public class Record
+    public class Record: IRecord, IParent
     {
-        [RecordInfo(-2, 3, Align.LEFT)]
+        [Field(-2, 3, Align.LEFT)]
         public string Name { get; set; }
 
-        [RecordInfo(-1, 2, Align.LEFT)]
+        [Field(-1, 2, Align.LEFT)]
         public string Version { get; set; }
 
         public Record()
@@ -21,18 +21,20 @@ namespace underware.VDA
 
         public Record(string line)
         {
-            Parse(line);
+            InternalParse(line);
         }
+        
+        public IList<Record> Subrecords { get; set; } = new List<Record>(); 
 
-        private List<RecordInfo> GetStructure()
+        private List<FieldAttribute> GetStructure()
         {
-            Type t = GetType();
+            var t = GetType();
 
-            List<RecordInfo> items = new List<RecordInfo>();
+            var items = new List<FieldAttribute>();
 
-            foreach (PropertyInfo property in t.GetProperties())
+            foreach (var property in t.GetProperties())
             {
-                var info = property.GetCustomAttribute<RecordInfo>();
+                var info = property.GetCustomAttribute<FieldAttribute>();
 
 
                 if (info != null)
@@ -45,20 +47,33 @@ namespace underware.VDA
             return items.OrderBy(i => i.Ordinal).ToList();
         }
 
-        private void Parse(string line)
+        public static Record Parse(string line)
         {
-            List<RecordInfo> structure = GetStructure();
+            if (line.Length < 5)
+                throw new Exception("Line is too short");
+
+            var name = line.Substring(0, 3).TrimEnd();
+            var version = line.Substring(3, 2).TrimEnd();
+                
+            var recordType = Type.GetType($"underware.VDA.Records.V{version}.R{name}") ?? typeof(Record);
+            
+            return (Record)Activator.CreateInstance(recordType, line);
+        }
+
+        private void InternalParse(string line)
+        {
+            var structure = GetStructure();
 
             //if (line.Length < structure.Sum(i => i.Length))
             //    throw new Exception("Line is too short");
 
-            int curPos = 0;
-            foreach (RecordInfo info in structure)
+            var curPos = 0;
+            foreach (var info in structure)
             {
-                PropertyInfo prop = this.GetType().GetProperty(info.Name);
-                int len = info.Length;
+                var prop = this.GetType().GetProperty(info.Name);
+                var len = info.Length;
 
-                string strVal = "";
+                var strVal = "";
 
                 if (line.Length > curPos + len)
                     strVal = line.Substring(curPos, len).TrimEnd().TrimStart();
@@ -79,21 +94,15 @@ namespace underware.VDA
 
             foreach (var info in structure)
             {
-                var prop = this.GetType().GetProperty(info.Name); 
+                var prop = this.GetType().GetProperty(info.Name);
                 var len = info.Length;
                 var strValue = $"{prop.GetValue(this)}";
 
 
                 if (strValue.Length > len)
-                {
-                    // throw new ArgumentOutOfRangeException("Value is too long");
-                    strValue = strValue.Substring(0, len);
-                }
-
-                if (info.Align == Align.LEFT)
-                    s.Append(strValue.PadRight(len));
-                else
-                    s.Append(strValue.PadRight(len));
+                    strValue = info.Align == Align.LEFT ? strValue[..len] : strValue[^len..];
+                
+                s.Append(info.Align == Align.LEFT ? strValue.PadRight(len, info.PadChar) : strValue.PadLeft(len, info.PadChar));
             }
 
             return s.ToString();
@@ -101,20 +110,20 @@ namespace underware.VDA
 
         public XElement ToXml()
         {
-            List<RecordInfo> structure = GetStructure();
+            var structure = GetStructure();
 
-            List<XElement> items = new List<XElement>();
+            var items = new List<XElement>();
 
-            foreach (RecordInfo info in structure)
+            foreach (var info in structure)
             {
-                PropertyInfo prop = this.GetType().GetProperty(info.Name);
-                string strValue = (string)prop.GetValue(this);
+                var prop = this.GetType().GetProperty(info.Name);
+                var strValue = (string)prop.GetValue(this);
 
                 items.Add(new XElement($"{prop.Name}", strValue));
             }
 
 
-            return new XElement($"R{Name}", items);
+            return new XElement($"R{Name}", items, Subrecords.Select(r => r.ToXml()));
         }
     }
 }

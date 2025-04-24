@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using underware.VDA.Messages;
 
 namespace underware.VDA.Records.V03
 {
-    public class R719 : Record
+    [Parent(typeof(M4905))]
+    public class R719 : Record, IR719
     {
         public R719(string line) : base(line)
         {
@@ -16,34 +19,49 @@ namespace underware.VDA.Records.V03
             Version = "03";
         }
 
-        [RecordInfo(1, 7, Align.LEFT)]
+        [Field(1, 7, Align.RIGHT, '0')]
         public string RecordTypeCounter711 { get; set; }
 
-        [RecordInfo(2, 7, Align.LEFT)]
+        [Field(2, 7, Align.RIGHT, '0')]
         public string RecordTypeCounter712 { get; set; }
 
-        [RecordInfo(3, 7, Align.LEFT)]
+        [Field(3, 7, Align.RIGHT, '0')]
         public string RecordTypeCounter713 { get; set; }
 
-        [RecordInfo(4, 7, Align.LEFT)]
+        [Field(4, 7, Align.RIGHT, '0')]
         public string RecordTypeCounter714 { get; set; }
 
-        [RecordInfo(5, 7, Align.LEFT)]
+        [Field(5, 7, Align.RIGHT, '0')]
         public string RecordTypeCounter715 { get; set; }
 
-        [RecordInfo(6, 7, Align.LEFT)]
+        [Field(6, 7, Align.RIGHT, '0')]
         public string RecordTypeCounter716 { get; set; }
 
-        [RecordInfo(7, 7, Align.LEFT)]
+        [Field(7, 7, Align.RIGHT, '0')]
         public string RecordTypeCounter718 { get; set; }
 
-        [RecordInfo(8, 7, Align.LEFT)]
+        [Field(8, 7, Align.RIGHT, '0')]
         public string RecordTypeCounter719 { get; set; }
 
-        [RecordInfo(9, 7, Align.LEFT)]
+        [Field(9, 7, Align.RIGHT, '0')]
         public string RecordTypeCounter717 { get; set; }
 
-        [RecordInfo(10, 60, Align.LEFT)]
+        [Field(10, 60, Align.LEFT)]
         public string Empty { get; set; }
+
+        public void Recalculate(Interchange interchange)
+        {
+            var allRecords = interchange.GetAllRecords();
+
+            RecordTypeCounter711 = allRecords.Count(r => r.Name == "711").ToString();
+            RecordTypeCounter712 = allRecords.Count(r => r.Name == "712").ToString();
+            RecordTypeCounter713 = allRecords.Count(r => r.Name == "713").ToString();
+            RecordTypeCounter714 = allRecords.Count(r => r.Name == "714").ToString();
+            RecordTypeCounter715 = allRecords.Count(r => r.Name == "715").ToString();
+            RecordTypeCounter716 = allRecords.Count(r => r.Name == "716").ToString();
+            RecordTypeCounter718 = allRecords.Count(r => r.Name == "718").ToString();
+            RecordTypeCounter719 = allRecords.Count(r => r.Name == "719").ToString();
+            RecordTypeCounter717 = allRecords.Count(r => r.Name == "717").ToString();
+        }
     }
 }
