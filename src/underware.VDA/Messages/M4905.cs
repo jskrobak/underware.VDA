@@ -1,11 +1,12 @@
 ﻿using System.Linq;
+using underware.Edi.Common;
 using underware.Edi.Common.DocumentModel;
 using underware.VDA.Records;
 using underware.VDA.Records.V03;
 
 namespace underware.VDA.Messages;
 
-public class M4905(Interchange interchange): Message(interchange)
+public class M4905(Interchange interchange): Message(interchange), IDeliveryPlace, IUnloadingPoint
 {
     public override BaseDocument GetDocument()
     {
@@ -61,6 +62,8 @@ public class M4905(Interchange interchange): Message(interchange)
         return callOff;
 
     }
+
+    public string DeliveryPlaceId => AllRecords.OfType<IR512>().FirstOrDefault()?.C003_PlantCustomer;
     
-    
+    public string UnloadingPointId => AllRecords.OfType<IR512>().FirstOrDefault()?.C011_PointOfUnloading;
 }

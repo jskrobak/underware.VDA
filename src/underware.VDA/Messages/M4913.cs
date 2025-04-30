@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using underware.Edi.Common;
 using underware.Edi.Common.DocumentModel;
 using underware.VDA.Records;
 using underware.VDA.Records.V03;
 
 namespace underware.VDA.Messages
 {
-    public class M4913(Interchange interchange): Message(interchange)
+    public class M4913(Interchange interchange): Message(interchange), IDeliveryPlace, IUnloadingPoint
     {
         public override BaseDocument GetDocument()
         {
@@ -34,5 +35,9 @@ namespace underware.VDA.Messages
             return despatchAdvice;
 
         }
+
+        public string DeliveryPlaceId => AllRecords.OfType<IR713>().FirstOrDefault()?.C011_CustomerPlant;
+        public string UnloadingPointId => AllRecords.OfType<IR713>().FirstOrDefault()?.C005_UnloadingPoint;
+        
     }
 }
