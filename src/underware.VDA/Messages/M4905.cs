@@ -40,7 +40,7 @@ public class M4905(Interchange interchange): Message(interchange), IDeliveryPlac
             LastReceiptQty = r513.C006_QuantityLastReceipt.ParseDecimal(),
             LastReceivedDeliveryNoteDate = r513.C005_DeliveryNoteDateLastReceipt.TryParseDate(),
             LastReceivedDeliveryNoteNo = r513.C004_DeliveryNoteNumberLastReceipt,
-            Deliveries = vdaDeliveries.Where(d => d.Date.IsDate()).Select(d => new CallOffDelivery()
+            Deliveries = vdaDeliveries.Where(d => d.Date.IsDate()).Select(d => new Delivery()
             {
                 Date = d.Date.ParseDate(),
                 Qty = d.Quantity.ParseDecimal()
@@ -50,7 +50,7 @@ public class M4905(Interchange interchange): Message(interchange), IDeliveryPlac
         foreach (var r514 in ((Record)r513).Subrecords.OfType<IR514>())
         {
             var deliveries = ((Record)r514).GetDeliveries().Where(d => d.Date.IsDate());
-            var list = deliveries.Select(d => new CallOffDelivery()
+            var list = deliveries.Select(d => new Delivery()
             {
                 Date = d.Date.ParseDate(),
                 Qty = d.Quantity.ParseDecimal()

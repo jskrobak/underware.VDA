@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using underware.Edi.Common.DocumentModel;
 using underware.VDA.Messages;
 using underware.VDA.Models;
 using underware.VDA.Records;
@@ -10,6 +11,18 @@ namespace underware.VDA;
 
 public static class Extensions
 {
+
+    public static Delivery GetAt(this IList<Delivery> list, int index)
+    {
+        return list.Count <= index ? null : list[index];       
+    }
+    
+    public static string GetVdaDate(this Delivery delivery)
+    {
+        return string.IsNullOrEmpty(delivery.SpecialDateCode) 
+            ? delivery.Date.ToVdaDate() : 
+            delivery.SpecialDateCode;
+    }
 
     public static string ToVdaDate(this DateTime date)
     {
