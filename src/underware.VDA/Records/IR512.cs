@@ -32,7 +32,7 @@ public interface IR512
 
     string C017_UsingCode { get; set; }
 
-    string C018_AccountingCodee { get; set; }
+    string C018_AccountingCode { get; set; }
 
     string C019_Store { get; set; }
 

@@ -50,7 +50,7 @@ public class R512 : Record, IR512
 
     [Field(17, 1, Align.LEFT)] public string C017_UsingCode { get; set; }
 
-    [Field(18, 7, Align.LEFT)] public string C018_AccountingCodee { get; set; }
+    [Field(18, 7, Align.LEFT)] public string C018_AccountingCode { get; set; }
 
     [Field(19, 7, Align.LEFT)] public string C019_Store { get; set; }
 
