@@ -37,10 +37,11 @@ public static class Extensions
 
     private static string GetVdaDate(DateTime start, DateTime end)
     {
-        if(end.Subtract(start).Days == 6)
-            return $"{start:yy}00{start.GetIso8601WeekOfYear():00}";
-        
-        return end.AddMonths(-1) == start ? $"{start:yy}{start.Month:00}00" : start.ToVdaDate();
+        return end.Subtract(start).Days == 6 
+            ? $"{start:yy}00{start.GetIso8601WeekOfYear():00}" 
+            : $"{start:yy}{start.GetIso8601WeekOfYear():00}{end.GetIso8601WeekOfYear():00}";
+
+        //return end.AddMonths(-1) == start ? $"{start:yy}{start.Month:00}00" : start.ToVdaDate();
     }
     
     public static int GetIso8601WeekOfYear(this DateTime date)
