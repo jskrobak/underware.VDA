@@ -30,6 +30,10 @@ namespace underware.VDA.Messages
                 Plant = r713.C011_CustomerPlant,
                 UnloadingPoint = r713.C005_UnloadingPoint,
                 MeansOfTransportNo = r712.C015_MeansOfTransportNo,
+                Carrier = new Party()
+                {
+                    GLN = r712.C005_Carrier
+                }
             };
               
             return despatchAdvice;
