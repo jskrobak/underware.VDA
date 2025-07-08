@@ -136,8 +136,7 @@ namespace underware.VDA
 
         public XDocument ToXml(Encoding outEnc)
         {
-            var nodes = new List<XElement>();
-            nodes.Add(((Record)Header).ToXml());
+            var nodes = new List<XElement> { ((Record)Header).ToXml() };
             nodes.AddRange(Messages.Select(m => m.ToXml()));
             nodes.Add(((Record)Trailer).ToXml());
             

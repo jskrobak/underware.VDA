@@ -51,8 +51,8 @@ namespace underware.VDA.Records.V03
 
         public string Sender
         {
-            get { return C004_SupplierID; }
-            set { C004_SupplierID = value; }
+            get => C004_SupplierID;
+            set => C004_SupplierID = value;
         }
         public string Receiver => C003_CustomerID;
         

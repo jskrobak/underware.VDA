@@ -1,6 +1,6 @@
 ﻿namespace underware.VDA.Records;
 
-interface IR712
+public interface IR712
 {
     string C003_ShipmentLoadReferenceNo { get; set; }
     string C004_PlantSupplier { get; set; }
