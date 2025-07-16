@@ -54,7 +54,11 @@ namespace underware.VDA.Records.V03
             get => C004_SupplierID;
             set => C004_SupplierID = value;
         }
-        public string Receiver => C003_CustomerID;
+        public string Receiver
+        {
+            get => C003_CustomerID;
+            set => C003_CustomerID = value;
+        }
         
         public string RefNumber => C006_NewTransmissionNo;
         public string MessageName => "4913";

@@ -43,9 +43,16 @@ public class R821: Record, IR821
     [Field(11, 24, Align.LEFT)]
     public string C011_Blank { get; set; }
 
-    public string Sender { get => C003_CustomerID; set => C003_CustomerID = value; }
-    
-    public string Receiver => C004_SupplierID;
+    public string Sender
+    {
+        get => C003_CustomerID;
+        set => C003_CustomerID = value;
+    }
+    public string Receiver
+    {
+        get => C004_SupplierID;
+        set => C004_SupplierID = value;
+    }
     public string RefNumber => C006_NewTransmissionNo;
     public string MessageName => "4908";
     public Type MessageType => typeof(M4908);

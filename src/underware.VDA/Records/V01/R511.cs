@@ -39,10 +39,16 @@ public class R511: Record, IR511
 
     public string Sender
     {
-        get { return C003_CustomerID; }
-        set { C003_CustomerID = value; }
+        get => C003_CustomerID;
+        set => C003_CustomerID = value;
     }
-    public string Receiver => C004_SupplierID;
+    
+    public string Receiver
+    {
+        get => C004_SupplierID;
+        set => C004_SupplierID = value;
+    }
+    
     public string RefNumber => C006_NewTransmissionNo;
     public string MessageName => "4905";
     public Type MessageType => typeof(M4905);

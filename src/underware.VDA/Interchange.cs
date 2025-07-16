@@ -127,8 +127,12 @@ namespace underware.VDA
             get => Header.Sender;
             set => Header.Sender = value;
         }
-        
-        public string Receiver => Header.Receiver;
+
+        public string Receiver 
+        {
+            get => Header.Receiver;
+            set => Header.Receiver = value;
+        }
         public string Format => $"VDA.{Header.MessageName}";
 
         public string RefNo => Header.RefNumber;
