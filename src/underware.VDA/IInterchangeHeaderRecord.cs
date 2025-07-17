@@ -9,4 +9,5 @@ public interface IInterchangeHeaderRecord
     string RefNumber { get; }
     string MessageName { get; }
     Type MessageType { get; }
+    string TransmissionDate { get; }
 }

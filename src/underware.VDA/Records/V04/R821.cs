@@ -56,4 +56,5 @@ public class R821: Record, IR821
     public string RefNumber => C006_NewTransmissionNo;
     public string MessageName => "4908";
     public Type MessageType => typeof(M4908);
+    public string TransmissionDate => C007_TransmissionDate;
 }

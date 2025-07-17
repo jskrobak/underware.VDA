@@ -1,6 +1,6 @@
 ﻿namespace underware.VDA.Records;
 
-interface IR711: IInterchangeHeaderRecord
+public interface IR711: IInterchangeHeaderRecord
 {
     string C003_CustomerID { get; set; }
     string C004_SupplierID { get; set; }

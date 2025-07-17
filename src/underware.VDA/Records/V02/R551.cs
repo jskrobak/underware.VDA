@@ -52,4 +52,5 @@ public class R551: Record, IR551, IInterchangeHeaderRecord
     public string RefNumber => C006_NewTransmissionNo;
     public string MessageName => "4915";
     public Type MessageType => typeof(M4915);
+    public string TransmissionDate => C007_TransmissionDate;
 }

@@ -63,5 +63,6 @@ namespace underware.VDA.Records.V03
         public string RefNumber => C006_NewTransmissionNo;
         public string MessageName => "4913";
         public Type MessageType => typeof(M4913);
+        public string TransmissionDate => C007_TransmissionDate;
     }
 }

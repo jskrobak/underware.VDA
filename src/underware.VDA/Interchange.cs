@@ -44,7 +44,7 @@ namespace underware.VDA
         public IInterchangeTrailerRecord Trailer { get; set; }
         
         public List<Message> Messages { get; set; }
-        public DateTime? Created { get; }
+        public DateTime? Created { get; set; }
         public IEnumerable<IDocument> Documents => Messages;
         
 
@@ -95,6 +95,8 @@ namespace underware.VDA
                 Header = Record.Parse(lines[0]) as IInterchangeHeaderRecord,
                 Trailer = Record.Parse(lines.Last()) as IInterchangeTrailerRecord,
             };
+
+            //itr.Created = itr.Header.TransmissionDate;
             
             lines.RemoveAt(0);
             lines.RemoveAt(lines.Count - 1);
