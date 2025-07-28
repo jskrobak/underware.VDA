@@ -25,13 +25,27 @@ public static class Extensions
         return delivery.SpecialMeaning switch
         {
             SpecialDateMeaning.None => delivery.Date.ToVdaDate(),
-            SpecialDateMeaning.AndOfCallOff => "000000",
+            SpecialDateMeaning.EndOfCallOff => "000000",
             SpecialDateMeaning.NoRequirement => "222222",
             SpecialDateMeaning.Backlog => "333333",
             SpecialDateMeaning.Immediate => "444444",
             SpecialDateMeaning.SwitchToWeeklyMonthly => "555555",
             SpecialDateMeaning.Remaining => "999999",
             _ => delivery.Date.ToVdaDate()
+        };
+    }
+
+    public static SpecialDateMeaning GetSpecialMeaning(this DateQtyPair pair)
+    {
+        return pair.Date switch
+        {
+            "000000" => SpecialDateMeaning.EndOfCallOff,
+            "222222" => SpecialDateMeaning.NoRequirement,
+            "333333" => SpecialDateMeaning.Backlog,
+            "444444" => SpecialDateMeaning.Immediate,
+            "555555" => SpecialDateMeaning.SwitchToWeeklyMonthly,
+            "999999" => SpecialDateMeaning.Remaining,
+            _ => SpecialDateMeaning.None
         };
     }
 
@@ -57,6 +71,9 @@ public static class Extensions
         return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(date,
             CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
     }
+    
+    
+
 
     public static string ToVdaDate(this DateTime date)
     {
@@ -99,7 +116,6 @@ public static class Extensions
         
         return deliveries;
     }
-    
     
     public static bool Is(this IParent parent, Type type)
     {
