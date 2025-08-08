@@ -148,6 +148,6 @@ public static class Extensions
     
     public static decimal ParseDecimal(this string s)
     {
-        return decimal.Parse(s, CultureInfo.InvariantCulture);
+        return string.IsNullOrEmpty(s) ? 0m : decimal.Parse(s, CultureInfo.InvariantCulture);
     }
 }

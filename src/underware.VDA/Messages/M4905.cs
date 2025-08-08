@@ -53,8 +53,10 @@ public class M4905(Interchange interchange): Message(interchange), IDeliveryPlac
                vdaDeliveries.AddRange(((Record)r514).GetDeliveries().ToList());
             }
 
-            var intervalType = IntervalType.Day;
-            foreach (var dq in vdaDeliveries)
+            var intervalType = IntervalType.Week;
+            foreach (var dq in vdaDeliveries
+                         .Where(d => !string.IsNullOrEmpty(d.Date) 
+                                     && !string.IsNullOrEmpty(d.Quantity)).ToList())
             {
                 var meaning = dq.GetSpecialMeaning();
 
