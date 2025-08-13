@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using underware.Edi.Common;
 
 namespace underware.VDA;
 

@@ -10,7 +10,7 @@ using underware.VDA.Messages;
 
 namespace underware.VDA
 {
-    public class Message(Interchange interchange): IDocument, IEdiData, IParent
+    public class Message(Interchange interchange): IDocument, IEdiData, IParent, ITree
     {
 
         public Interchange Interchange { get; set; } = interchange;
@@ -70,6 +70,16 @@ namespace underware.VDA
         }
 
         public IList<Record> Subrecords { get; set; } = new List<Record>();
-        
+
+        public TreeNode BuildTree()
+        {
+            var root = new TreeNode{Name = "Message"};
+            foreach (var rec in AllRecords)
+            {
+                root.Children.Add(rec.BuildTree());
+            }
+
+            return root;
+        }
     }
 }

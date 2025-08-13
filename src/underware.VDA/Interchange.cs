@@ -11,7 +11,7 @@ using underware.Edi.Common.DocumentModel;
 
 namespace underware.VDA
 {
-    public class Interchange : IEdiInterchange, IXmlExportable
+    public class Interchange : IEdiInterchange, IXmlExportable, ITree
 
     {
         public Interchange()
@@ -170,6 +170,16 @@ namespace underware.VDA
             return XDocument.Load(ms, LoadOptions.PreserveWhitespace);
             
         }
-         
+
+        public TreeNode BuildTree()
+        {
+            var node = new TreeNode { Name = "Interchange" };
+            
+            node.Children.Add(TreeNode.Build("Header", Header));
+            node.Children.AddRange(Messages.Select(m => m.BuildTree()));
+            node.Children.Add(TreeNode.Build("Trailer", Trailer));
+
+            return node;
+        }
     }
 }

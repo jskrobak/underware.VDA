@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Xml.Linq;
+using underware.Edi.Common;
 
 namespace underware.VDA
 {
-    public class Record: IRecord, IParent
+    public class Record: IRecord, IParent, ITree
     {
         [Field(-2, 3, Align.LEFT)]
         public string Name { get; set; }
@@ -124,6 +126,18 @@ namespace underware.VDA
 
 
             return new XElement($"R{Name}", items, Subrecords.Select(r => r.ToXml()));
+        }
+
+        public TreeNode BuildTree()
+        {
+            var node = TreeNode.Build(Name, this);
+            
+            foreach (var sub in Subrecords)
+            {
+            //    node.Children.Add(sub.BuildTree());
+            }
+            
+            return node;
         }
     }
 }
